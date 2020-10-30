@@ -14,7 +14,7 @@ library(kableExtra)
 library(lubridate)
 ```
 
-## Size comparisons between treatments for purple urchins on Naples Reef - January 2010
+### Size comparisons between treatments for purple urchins on Naples Reef (January 2010)
 
 ```{r, echo = TRUE, message = FALSE, warning = FALSE}
 urchins <- read_csv(here("data", "urchins.csv")) %>% 
@@ -88,7 +88,10 @@ annual_sample <- napl_purple %>%
 t.test(x = control_sample, annual_sample)
 ```
 
+### 5) Summarize
+**Write a comprehensive statement comparing the means that provides meaningful discussion about the means difference beyond (but also including) the p-value, possibly including the actual means and standard deviations for each group, and the actual difference of percent difference in means:**
 
+**Write the meaning of the p-value that you found in the t-test above:**
 
 
 
