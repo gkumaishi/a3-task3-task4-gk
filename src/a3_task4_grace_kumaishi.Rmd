@@ -1,0 +1,98 @@
+---
+title: "Assignment 3 - Task 4"
+author: "Grace Kumaishi"
+date: "10/30/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(janitor)
+library(here)
+library(kableExtra)
+library(lubridate)
+```
+
+## Size comparisons between treatments for purple urchins on Naples Reef - January 2010
+
+```{r, echo = TRUE, message = FALSE, warning = FALSE}
+urchins <- read_csv(here("data", "urchins.csv")) %>% 
+  clean_names()
+```
+
+### 1) Data Wrangling
+Include only Naples Reef observations for purple urchins observed in January 2010
+
+```{r, echo = TRUE, message = FALSE, warning = FALSE}
+napl_purple <- urchins %>% 
+  filter(common_name == "Purple Urchin") %>% 
+  mutate(date_new = mdy(date)) %>%
+  mutate(year = year(date_new)) %>% 
+  mutate(month = month(date_new)) %>% 
+  mutate(full_site_name = case_when( 
+    site == "NAPL" ~ "Naples Reef", 
+    site == "AQUE" ~ "Arroyo Quemado Reef",
+    site == "CARP" ~ "Carpinteria Reef",
+    site == "MOHK" ~ "Mohawk Reef",
+    site == "IVEE" ~ "Isla Vista Reef")) %>% 
+  filter(site == "NAPL") %>% 
+  filter(year == 2010) %>% 
+  filter(month == 1)
+
+class(year) <- "Date"
+class(month) <- "Date"
+```
+
+### 2) Histogram and QQ-plots
+Look at and consider histograms and QQ-plots for the size distribution for each of the treatments (control and annual) to assess normality
+
+```{r, echo = TRUE, message = FALSE, warning = FALSE}
+ggplot(data = napl_purple, aes(x = size)) +
+  geom_histogram(bins = 15) +
+  facet_wrap(~treatment)
+
+ggplot(data = napl_purple, aes(sample = size)) +
+  geom_qq() +
+  facet_wrap(~treatment)
+```
+
+**MAIN TAKEAWAYS:**
+
+### 3) Descriptive Statistcs
+Create a statistcs table for both groups including at least mean, standard deviation, and sample size. 
+
+```{r, echo = TRUE, message = FALSE, warning = FALSE}
+napl_purple_stats <- napl_purple %>% 
+  group_by(treatment) %>% 
+  summarize(mean_size = mean(size),
+            median_size = median(size),
+            sd_size = sd(size),
+            n = n())
+
+kbl(napl_purple_stats) %>% 
+  kable_styling()
+```
+
+### 4) Two-sample t-test
+
+```{r, echo = TRUE, message = FALSE, warning = FALSE}
+control_sample <- napl_purple %>% 
+  filter(treatment == "CONTROL") %>% 
+  pull(size)
+
+annual_sample <- napl_purple %>% 
+  filter(treatment == "ANNUAL") %>% 
+  pull(size)
+
+t.test(x = control_sample, annual_sample)
+```
+
+
+
+
+
+
+
+
+
