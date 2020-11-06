@@ -39,25 +39,32 @@ napl_purple <- urchins %>%
   filter(site == "NAPL") %>% 
   filter(year == 2010) %>% 
   filter(month == 1)
-
-class(year) <- "Date"
-class(month) <- "Date"
 ```
 
 ### 2) Histogram and QQ-plots
 Look at and consider histograms and QQ-plots for the size distribution for each of the treatments (control and annual) to assess normality
 
 ```{r, echo = TRUE, message = FALSE, warning = FALSE}
-ggplot(data = napl_purple, aes(x = size)) +
+#HISTOGRAM:
+ggplot(data = napl_purple, aes(x = size, fill = treatment)) +
   geom_histogram(bins = 15) +
-  facet_wrap(~treatment)
-
+  facet_wrap(~treatment) +
+  theme_minimal() +
+  labs(x = "diameter (cm)") +
+  theme(legend.position = "none")
+  
+#QQ-PLOT:
 ggplot(data = napl_purple, aes(sample = size)) +
   geom_qq() +
-  facet_wrap(~treatment)
+  facet_wrap(~treatment) +
+  theme_minimal() 
 ```
 
 **MAIN TAKEAWAYS:**
+
+-Histograms look like they could be normally distributed, but I'm not confident in that assessment without a Quantile-Quantile (QQ) plot. 
+
+-Both QQ plots both appear to follow a linear trend, signaling to me that both annual and control treatments are normally distributed. 
 
 ### 3) Descriptive Statistcs
 Create a statistcs table for both groups including at least mean, standard deviation, and sample size. 
@@ -89,9 +96,17 @@ t.test(x = control_sample, annual_sample)
 ```
 
 ### 5) Summarize
+
 **Write a comprehensive statement comparing the means that provides meaningful discussion about the means difference beyond (but also including) the p-value, possibly including the actual means and standard deviations for each group, and the actual difference of percent difference in means:**
 
+The actual mean of control sample x is 3.725806 cm, while the actual mean of annual sample y is 3.916667 cm. The actual mean difference between the two treatments is about .19 cm, while the percent difference is about 5%. Our null hypothesis is that both samples are drawn from populations with the same mean. The p-value is telling us that there is about 20% chance that we could have randomly drawn samples with means that are at least this different if they were actually taken from populations that had the same mean (if Purple and Red urchins actually have the same mean size, there is close to 20% chance that we could have randomly taken samples from that population that ended up being at least this different). Our p-value is not small enough for us to confidently state that the true mean of each species is significantly different from each other.
+
 **Write the meaning of the p-value that you found in the t-test above:**
+
+The p-value is telling us that there is about 20% chance that we could have randomly drawn samples with means that are at least this different if they were actually taken from populations that had the same mean. 
+
+
+
 
 
 

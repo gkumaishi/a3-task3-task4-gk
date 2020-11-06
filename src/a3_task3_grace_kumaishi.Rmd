@@ -29,14 +29,17 @@ Compare the distribution of sizes between purple and read urchins using a facete
 **Histogram:**
 ```{r, echo = TRUE, message = FALSE, warning = FALSE}
 ggplot(data = urchins, aes(x = size)) +
-  geom_histogram(bins = 15) +
-  facet_wrap(~common_name)
+  geom_histogram(bins = 20) +
+  facet_wrap(~common_name) +
+  labs(x = "diameter (cm)")
 ```
 
 **Boxplot: **
 ```{r, echo = TRUE, message = FALSE, warning = FALSE}
 ggplot(data = urchins, aes(x = common_name, y = size)) +
-  geom_boxplot() 
+  geom_boxplot() +
+  labs(x = "common name", 
+       y = "diameter (cm)")
 ```
 
 ### 3) Descriptive statistics table
@@ -55,15 +58,17 @@ kbl(urchin_stats) %>%
 ```
 
 ### 4) Add a summary briefly describing overall takeaways about how size compares between the two species.
-By looking at the graphs and table above, it appears that Red Urchins tend to grow to be larger than Purple Urchins. For our samples, the mean size of Purple Urchins was 4.47 cm, while the mean size of Red Urchins was 6.78.
-The actual and percent difference in mean urchin diameter for the two species is approximately 2.3 cm and 41% respectively.
+By looking at the graphs and table above, it appears that Red Urchins tend to grow to be larger than Purple Urchins. For our samples, the mean size of Purple Urchins was 4.47 cm, while the mean size of Red Urchins was 6.78 cm. The actual and percent difference in mean urchin diameter for the two species is approximately 2.3 cm and 41% respectively. From looking at the histogram, it appears that the spread of Red Urchin size is wider than that of Purple Urchins. We can also see this by comparing the outliers in our boxplot. 
 
 ## Section 2: Purple urchin counts by site and year
 
 ### 1) Create a stored subset of the urchins data
 -Filter to only include observations for purple urchins
+
 -Convert the date to class "Date"
+
 -Create a new column that only contains the year
+
 -Create a new column called site_full that contains the full name for each site
 
 ```{r, echo = TRUE, message = FALSE, warning = FALSE}
@@ -77,32 +82,30 @@ purple_urchins <- urchins %>%
     site == "CARP" ~ "Carpinteria Reef",
     site == "MOHK" ~ "Mohawk Reef",
     site == "IVEE" ~ "Isla Vista Reef"))
-
-class(year) <- "Date"
-class(year)
 ```
 
 ### 2) Make a summary table containing the total number of purple urchins observed by site and year
 
 ```{r, echo = TRUE, message = FALSE, warning = FALSE}
 purple_urchins_stats <- purple_urchins %>% 
-  count(year, full_site_name) # ADD table using kableEXTRA?
+  count(year, full_site_name)
 
 kbl(purple_urchins_stats) %>% 
-  kable_minimal
+  kable_styling()
 ```
 
 ### 3) Make an exploratory graph
 
 ```{r, echo = TRUE, message = FALSE, warning = FALSE}
-ggplot(data = purple_urchins_stats, aes(x = year, y = n)) +
-  geom_line() +
+ggplot(data = purple_urchins_stats, aes(x = year, y = n, fill = full_site_name)) +
+  geom_col() +
   facet_wrap(~full_site_name, ncol = 3) +
   labs(title = "Purple Urchins observed by site and year",
        y = "number observed") +
-  theme(axis.text.x = element_text(angle = 50, hjust = 1)) 
+  theme_minimal() +
+  theme(legend.position = "none")
 ```
-# **FIX YEARS IN GRAPH!!!**
+
 
 
 
